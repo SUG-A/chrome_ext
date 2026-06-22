@@ -1,15 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <style>
-    body { width: 150px; padding: 10px; text-align: center; font-family: sans-serif; }
-    button { padding: 5px 10px; cursor: pointer; }
+    body {
+      width: 260px;
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      margin: 0;
+    }
+
+    h3 {
+      margin-top: 0;
+    }
+
+    .alarm-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding: 5px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .delete-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      padding: 2px 8px;
+    }
+
+    .footer {
+      margin-top: 15px;
+      display: flex;
+      gap: 5px;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      gap: 5px;
+    }
+
+    input[type="time"] {
+      flex-grow: 1;
+    }
+
+    .add-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    .page-btn {
+      background-color: #008CBA;
+      color: white;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      border-radius: 3px;
+      width: 100%;
+      margin-top: 5px;
+    }
   </style>
 </head>
+
 <body>
-  <button id="checkBtn">DOMを取得</button>
+
+  <h3>設定中のアラーム</h3>
+  <div id="alarmList"></div>
+
+  <div class="footer">
+    <div class="row">
+      <input type="time" id="alarmTime">
+      <button class="add-btn" id="addAlarmBtn">追加</button>
+    </div>
+
+    <button class="page-btn" id="getFromFileBtn">現在の画面から日時を取得して追加</button>
+  </div>
 
   <script src="popup.js"></script>
 </body>
+
 </html>
