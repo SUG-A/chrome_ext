@@ -18,14 +18,24 @@ document.getElementById('checkBtn').addEventListener('click', async () => {
     // クエリパラメータとか入っててもOK！
     if (tab.url.startsWith(savedUrl)) {
       
-      // 今開いてるページでプログラムを実行する
+      // 今開いてるページでプログラムを実行する（ここを書き換えます）
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
-          // この中身は「今開いているページ」側で実行されます
-          const dom = document.documentElement.outerHTML;
-          alert("URLが一致しました！DOMを表示します。");
-          alert(dom);
+          // 1. ページ内から「class="news-date"」がついた要素を検索して取得する
+          const newsDateElement = document.querySelector('.news-date');
+
+          // 2. 要素が見つかったかどうかで処理を分ける（エラー防止のための安全装置）
+          if (newsDateElement) {
+            // 見つかった場合：その要素の「文字データ（テキスト）」を抜き出す
+            const dateText = newsDateElement.textContent.trim();
+            
+            alert("URLが一致しました！日付を取得しました。");
+            alert("取得した日付: " + dateText);
+          } else {
+            // 見つからなかった場合
+            alert("URLは一致しましたが、ページ内に 'news-date' クラスが見つかりませんでした。");
+          }
         }
       });
 
