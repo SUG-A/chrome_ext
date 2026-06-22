@@ -1,15 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "URL判定・DOM取得拡張機能",
+  "name": "Alarm Setter",
   "version": "1.1",
-  "description": "オプションで設定したURLのDOMを取得します",
+  "description": "esmのカレンダーを表示しながらボタンを押すと、アラームを追加できます。",
   "permissions": [
+    "alarms",
+    "notifications",
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
+  ],
+  "icons": {
+    "128": "icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
   ],
   "action": {
-    "default_popup": "popup.html"
-  },
-  "options_page": "options.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "icon.png"
+    }
+  }
 }
