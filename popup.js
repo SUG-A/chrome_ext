@@ -39,7 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
-          createChromeAlarm(response.time); // 時間だけでアラーム作成
+          const addedTimes = response.times; // 例: ["06:30", "06:50"]
+
+          addedTimes.forEach((time) => {
+            createChromeAlarm(time); // すでに作ってある関数を使い回して1個ずつ登録！
+          });
+
+          alert(`URL認証成功：画面から ${addedTimes.length} 件のアラームを一括設定しました！`);
         });
       } else {
         alert("開いているURLが違います");
