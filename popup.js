@@ -1,9 +1,12 @@
 document.getElementById('checkBtn').addEventListener('click', async () => {
   // 1. 今開いているタブの情報を取得
+  // [tab]:配列の最初だけ持ってきてる
+  // active: true → 今開いているタブを取得
+  // currentWindow: true → 今クリックしているウィンドウのタブを取得
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   
   // 2. 設定画面で保存されたURLを取得
-  chrome.storage.sync.get(['savedUrl'], (result) => {
+  chrome.storage.local.get(['savedUrl'], (result) => {
     const savedUrl = result.savedUrl;
 
     if (!savedUrl) {
@@ -12,9 +15,10 @@ document.getElementById('checkBtn').addEventListener('click', async () => {
     }
 
     // 3. URLの判定（前方の部分一致で判定します）
+    // クエリパラメータとか入っててもOK！
     if (tab.url.startsWith(savedUrl)) {
       
-      // 一致した場合：今開いているページの中でプログラムを実行してDOMを取る
+      // 今開いてるページでプログラムを実行する
       chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
