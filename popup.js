@@ -77,8 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const displayTitle = minusMinutes > 0 ? `${item.title}(${minusMinutes}分前)` : item.title;
 
             // 過去の時間でなければ登録（createChromeAlarm側で過去判定をします）
-            createChromeAlarm(calculatedTime, displayTitle);
-            successCount++;
+            // 関数を動かして、戻り値が true だったらカウントを増やす
+            const isCreated = createChromeAlarm(calculatedTime, displayTitle);
+            if (isCreated) {
+              successCount++;
+            }
           });
           alert(`画面から ${successCount} 件の予定を ${minusMinutes} 分前で一括設定しました！`);
         });
@@ -117,9 +120,10 @@ function createChromeAlarm(timeStr, titleStr) {
   // 今日の指定時間にセット
   target.setHours(hour, minute, 0, 0);
 
-  // もし指定された時間が「すでに過ぎた過去の時間」なら、処理を中断する
-  if (target <= now) return;
-
+  // もし指定された時間が「すでに過ぎた過去の時間」なら、処理を中断してfalseを返す
+  if (target <= now) {
+    return false;
+  }
   // アラーム名にタイトルも埋め込む（例: "notify_08:30_朝会"）
   const alarmName = `notify_${timeStr}_${titleStr}`;
   chrome.alarms.create(alarmName, { when: target.getTime() });
@@ -135,6 +139,7 @@ function createChromeAlarm(timeStr, titleStr) {
       });
     }
   });
+  return true;// ★ここを追加：無事に登録が完了したら true を返す
 }
 
 // アラーム一覧の更新（文字の分解が不要になり、めちゃくちゃスッキリ！）
