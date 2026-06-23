@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>拡張機能テスト用ページ（テキスト混在版）</title>
+  <style>
+    body { font-family: sans-serif; margin: 30px; background: #f0f2f5; }
+    .calendar-container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    h1 { font-size: 18px; color: #333; border-bottom: 2px solid #00bb55; padding-bottom: 8px; }
+    .schedule-list { list-style: none; padding: 0; }
+    .schedule-list li { padding: 10px; margin-bottom: 5px; background: #f9f9f9; border-radius: 4px; }
+    
+    /* 今回のターゲットとなるクラス */
+    .schedule-text { font-size: 16px; color: #333; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="calendar-container">
+    <h1>ESM 今日のスケジュール</h1>
+    <p style="font-size: 12px; color: gray;">※「時間 予定」の塊から時間だけを抜き取ります。</p>
+    
+    <ul class="schedule-list">
+      <li><span class="schedule-text">08:30 朝会</span></li>
+      <li><span class="schedule-text">10:00 全社会議</span></li>
+      <li><span class="schedule-text">12:55 チーム昼礼</span></li>
+      <li><span class="schedule-text">23:30 進捗報告会</span></li>
+      <li><span class="schedule-text">23:59 退勤</span></li>
+    </ul>
+  </div>
+
+</body>
+</html>

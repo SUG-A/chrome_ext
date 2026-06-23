@@ -78,11 +78,12 @@
 
   <div class="footer">
     <div class="row">
-      <input type="time" id="alarmTime">
+      <input type="time" id="alarmTime" required>
+      <input type="text" id="alarmTitle" placeholder="予定名(例：朝会)" required>
       <button class="add-btn" id="addAlarmBtn">追加</button>
     </div>
 
-    <button class="page-btn" id="getFromFileBtn">現在の画面から日時を取得して追加</button>
+    <button class="page-btn" id="getFromFileBtn">画面から取得して追加</button>
   </div>
 
   <script src="popup.js"></script>

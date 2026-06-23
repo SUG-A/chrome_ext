@@ -5,10 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // 手動追加ボタン（時間だけ取得）
   document.getElementById("addAlarmBtn").addEventListener("click", () => {
     const timeInput = document.getElementById("alarmTime").value; // "15:30" など
-    if (!timeInput) return;
+    const titleInput = document.getElementById("alarmTitle").value.trim(); // "朝会"
 
-    createChromeAlarm(timeInput);
+    // 手動の時はどっちも必須
+    if (!timeInput || !titleInput) {
+      alert("時間と予定名はどちらも必須入力です！");
+      return;
+    }
+
+    createChromeAlarm(timeInput, titleInput);
+
+    // 入力欄をリセット
     document.getElementById("alarmTime").value = "";
+    document.getElementById("alarmTitle").value = "";
   });
 
   // 画面から時間のみ取得して追加（URL認証付き）
@@ -35,17 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
           // !response: content.jsからの返却値がundefinedの場合
           // !response.success: content.jsでページ内処理の失敗チェック
           if (chrome.runtime.lastError || !response || !response.success) {
-            alert(response?.error || "時間の取得に失敗しました。");
+            alert(response?.error || "取得に失敗しました。");
             return;
           }
 
-          const addedTimes = response.times; // 例: ["06:30", "06:50"]
-
-          addedTimes.forEach((time) => {
-            createChromeAlarm(time); // すでに作ってある関数を使い回して1個ずつ登録！
+          // 画面から取れた[{time, title}, ...]をループで回して登録
+          response.schedules.forEach((item) => {
+            createChromeAlarm(item.time, item.title);
           });
-
-          alert(`URL認証成功：画面から ${addedTimes.length} 件のアラームを一括設定しました！`);
+          alert(`画面から ${response.schedules.length} 件の予定を一括設定しました！`);
         });
       } else {
         alert("開いているURLが違います");
@@ -55,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 時間（HH:MM）だけを使ってアラームをセットする関数
-function createChromeAlarm(timeStr) {
+function createChromeAlarm(timeStr, titleStr) {
   const [hour, minute] = timeStr.split(":").map(Number);
   const now = new Date();
   const target = new Date();
@@ -64,20 +71,18 @@ function createChromeAlarm(timeStr) {
   target.setHours(hour, minute, 0, 0);
 
   // もし指定された時間が「すでに過ぎた過去の時間」なら、処理を中断する
-  if (target <= now) {
-    alert("過去の時間は設定できません。本日これからの時間を指定してください。");
-    return; // ここで処理を終わらせることで、ChromeアラームもStorageも登録されません
-  }
+  if (target <= now) return;
 
-  // アラーム名はシンプルに「notify_15:30」
-  const alarmName = `notify_${timeStr}`;
+  // アラーム名にタイトルも埋め込む（例: "notify_08:30_朝会"）
+  const alarmName = `notify_${timeStr}_${titleStr}`;
   chrome.alarms.create(alarmName, { when: target.getTime() });
 
-  // 一覧表示用に保存（ここも時間だけの単純な文字列）
+  // 画面表示・管理用（"08:30 朝会" の形でお掃除用ストレージに保存）
+  const storageStr = `${timeStr} ${titleStr}`;
   chrome.storage.local.get({ userAlarms: [] }, (data) => {
     const userAlarms = data.userAlarms;
-    if (!userAlarms.includes(timeStr)) {
-      userAlarms.push(timeStr);
+    if (!userAlarms.includes(storageStr)) {
+      userAlarms.push(storageStr);
       chrome.storage.local.set({ userAlarms }, () => {
         updateAlarmList();
       });
@@ -94,10 +99,11 @@ function updateAlarmList() {
     // notify_15:30 から notify_ を消すだけで表示用になる
     const notifyAlarms = alarms
       .filter(a => a.name.startsWith("notify_"))
-      .map(a => ({
-        fullName: a.name,             // 例: "notify_15:30"
-        display: a.name.replace("notify_", "") // 例: "15:30"
-      }))
+      .map(a => {
+        // "notify_08:30_朝会" から "08:30 朝会" を作る
+        const cleanStr = a.name.replace("notify_", "").replace("_", " ");
+        return { fullName: a.name, display: cleanStr };
+      })
       .sort((a, b) => a.display.localeCompare(b.display));
 
     if (notifyAlarms.length === 0) {
