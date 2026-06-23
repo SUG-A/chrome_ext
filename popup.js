@@ -2,6 +2,19 @@ document.addEventListener("DOMContentLoaded", () => {
   // 画面が開かれたときにアラーム一覧を表示
   updateAlarmList();
 
+  // ★【新設】ポップアップを開いたときに、前回保存した「マイナス分数」を読み込む
+  chrome.storage.local.get(["savedMinusMinutes"], (result) => {
+    if (result.savedMinusMinutes !== undefined) {
+      document.getElementById("minusMinutes").value = result.savedMinusMinutes;
+    }
+  });
+
+  // ★【新設】「マイナス分数」の入力欄が変更されたら、その瞬間に自動保存する
+  document.getElementById("minusMinutes").addEventListener("input", (e) => {
+    const val = parseInt(e.target.value, 10) || 0;
+    chrome.storage.local.set({ savedMinusMinutes: val });
+  });
+
   // 手動追加ボタン（時間だけ取得）
   document.getElementById("addAlarmBtn").addEventListener("click", () => {
     const timeInput = document.getElementById("alarmTime").value; // "15:30" など
@@ -48,11 +61,26 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
+          // ★ 拡張画面に入力された「マイナスしたい分数」を取得（例: 5）
+          const minusMinutes = parseInt(document.getElementById("minusMinutes").value, 10) || 0;
+
+          let successCount = 0;
+
           // 画面から取れた[{time, title}, ...]をループで回して登録
           response.schedules.forEach((item) => {
-            createChromeAlarm(item.time, item.title);
+            // ★ ここで時間をマイナスする関数を挟む！
+            // 例: item.time が "10:00" で minusMinutes が 5 なら "09:55" が返る
+            const calculatedTime = minusTime(item.time, minusMinutes);
+
+            // 計算後の時間でアラームを登録
+            // タイトルに「(5分前)」と自動で付くようにすると通知の時に親切です
+            const displayTitle = minusMinutes > 0 ? `${item.title}(${minusMinutes}分前)` : item.title;
+
+            // 過去の時間でなければ登録（createChromeAlarm側で過去判定をします）
+            createChromeAlarm(calculatedTime, displayTitle);
+            successCount++;
           });
-          alert(`画面から ${response.schedules.length} 件の予定を一括設定しました！`);
+          alert(`画面から ${successCount} 件の予定を ${minusMinutes} 分前で一括設定しました！`);
         });
       } else {
         alert("開いているURLが違います");
@@ -60,6 +88,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+// ★【新設】"10:00" から 指定した分数を引き算して "09:55" みたいな文字列を返す関数
+function minusTime(timeStr, minutesToMinus) {
+  if (minutesToMinus === 0) return timeStr; // 0分前ならそのまま返す
+
+  const [hour, minute] = timeStr.split(":").map(Number);
+
+  // 今日の日付オブジェクトをベースに時間を計算
+  const date = new Date();
+  date.setHours(hour, minute, 0, 0);
+
+  // 分を引き算する
+  date.setMinutes(date.getMinutes() - minutesToMinus);
+
+  // 引き算した結果をまた "HH:MM" の形に整えて戻す
+  const h = String(date.getHours()).padStart(2, '0');
+  const m = String(date.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
+}
 
 // 時間（HH:MM）だけを使ってアラームをセットする関数
 function createChromeAlarm(timeStr, titleStr) {

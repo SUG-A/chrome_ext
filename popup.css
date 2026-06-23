@@ -1,0 +1,191 @@
+/* 全体のリセットとベース設定 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #333;
+    width: 350px;
+    /* ★横幅を 320px から 350px に少し広げて余裕を持たせました */
+}
+
+/* ★全体を囲うコンテナの横幅を固定し、はみ出しを防ぐ */
+.container {
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+h2 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+    font-weight: 700;
+    border-left: 4px solid #0052cc;
+    padding-left: 8px;
+}
+
+/* アラームリストのスタイル */
+#alarmList {
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.alarm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eaeaea;
+    font-size: 14px;
+}
+
+/* 削除ボタン (-) */
+.delete-btn {
+    background-color: #ffebe9;
+    color: #ff3b30;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.delete-btn:hover {
+    background-color: #ff3b30;
+    color: white;
+}
+
+.section-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #6c757d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 入力フォームの共通スタイル */
+input[type="time"],
+input[type="text"],
+input[type="number"] {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out;
+    box-sizing: border-box;
+    height: 36px;
+    /* 高さを統一 */
+}
+
+input:focus {
+    outline: none;
+    border-color: #0052cc;
+    box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.15);
+}
+
+/* 手動追加エリアの配置 */
+.input-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+/* ★時間の入力欄：桁が見えなくなるのを防ぐために幅をしっかり確保 */
+#alarmTime {
+    width: 100px;
+    flex-shrink: 0;
+}
+
+#alarmTitle {
+    flex: 1;
+    /* 残りのスペースを全部使う */
+    min-width: 0;
+    /* flex内の要素がはみ出るのを防ぐおまじない */
+}
+
+/* マイナス分数設定エリア */
+.sync-container {
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.minus-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+#minusMinutes {
+    width: 55px;
+    text-align: center;
+    padding: 4px;
+    height: 28px;
+}
+
+/* ボタンの共通スタイル */
+.btn {
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, transform 0.1s;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    /* 入力欄と高さを合わせる */
+    box-sizing: border-box;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* 追加ボタン (緑) */
+.btn-success {
+    background-color: #34c759;
+    color: white;
+    padding: 0 14px;
+    flex-shrink: 0;
+    /* 横幅が絶対に潰れないように固定 */
+}
+
+.btn-success:hover {
+    background-color: #28a745;
+}
+
+/* 画面から取得ボタン (青) */
+.btn-primary {
+    background-color: #0052cc;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.btn-primary:hover {
+    background-color: #0041a3;
+}

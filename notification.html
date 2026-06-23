@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>アラーム通知</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff5f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .time {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d32f2f;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .btn-close {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.1s;
+        }
+
+        .btn-close:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="displayTime" class="time">00:00</div>
+        <div id="displayTitle" class="title">予定の時間です</div>
+        <button id="closeBtn" class="btn-close">了解（閉じる）</button>
+    </div>
+
+    <script src="notification.js"></script>
+</body>
+
+</html>
